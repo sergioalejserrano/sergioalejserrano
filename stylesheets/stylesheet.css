@@ -1,881 +1,360 @@
-/*! normalize.css v3.0.2 | MIT License | git.io/normalize */
 
-/**
- * 1. Set default font family to sans-serif.
- * 2. Prevent iOS text size adjust after orientation change, without disabling
- *    user zoom.
- */
 
-html {
-  font-family: sans-serif; /* 1 */
-  -webkit-text-size-adjust: 100%; /* 2 */
-  -ms-text-size-adjust: 100%; /* 2 */
+// --------------------------------------------------------------- Z INDECIES
+// list all elements that need z-indexing in ascending order here
+// use the index() function to return a number to be used as the z-index
+// example - z-index:index($z-of,class-name);
+$z-of:
+'#home-bg',
+'#home-header',
+'.ring',
+'#polaris-graphics-animation',
+'#home-nav',
+;
+
+
+
+// --------------------------------------------------------------- MIXINS
+@mixin absoluteFill{
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 
-/**
- * Remove default margin.
- */
 
-body {
-  margin: 0;
+
+// --------------------------------------------------------------- DIMENSIONS
+$polarisCenterX:467;
+$polarisCenterY:353;
+$polarisWidth:1200;
+$polarisHeight:800;
+
+$ringHeight:1756;
+$ringWidth:$ringHeight;
+
+$ringSizeWidth: (100% * $ringWidth) / $polarisWidth;
+$ringSizeHeight: (100% * $ringHeight) / $polarisHeight;
+$ringSizeWidth: (100% * $ringWidth) / $polarisWidth;
+$ringSizeHeight: (100% * $ringHeight) / $polarisHeight;
+
+$polarisCenterXPercent:(100% * $polarisCenterX) / $polarisWidth;
+$polarisCenterYPercent:(100% * $polarisCenterY) / $polarisHeight;
+
+
+
+// --------------------------------------------------------------- COLOR VARS
+$colorAccent: #ff5831; // that blood orange
+$colorAnimationRings:     #448784 ;
+$colorAnimationBG:        #172126 ;
+
+
+
+// --------------------------------------------------------------- TIMER VARS
+$rushOut:cubic-bezier(0,0,0,1); // fast into slow
+
+// star initial timing
+$a1Delay:           .5s   ;
+$a1Start:             $a1Delay;
+$a1Duration:          0.6s  ;
+$a1Bleed:           0.35s ;
+
+// center blur timings
+$a2Delay:           .07s  ;
+$a2Duration:          $a2Delay * 50 ;
+$a2Start: $a1Start + $a1Duration - $a2Delay - $a1Bleed  ;
+  $a21Start:      $a2Start  + ( $a2Delay * 0 );
+  $a21Duration:   $a2Duration + ( $a2Delay * 3 );
+  $a22Start:      $a2Start  + ( $a2Delay * 1 );
+  $a22Duration:   $a2Duration + ( $a2Delay * 2 );
+  $a23Start:      $a2Start  + ( $a2Delay * 2 );
+  $a23Duration:   $a2Duration + ( $a2Delay * 1 );
+  $a24Start:      $a2Start  + ( $a2Delay * 3 );
+  $a24Duration:   $a2Duration + ( $a2Delay * 0 );
+
+$a3Delay: 0.4s;
+$a3Start: $a2Start + ($a2Delay * 4) + $a3Delay;
+$a3Duration: $a2Duration - ($a2Delay * 4);
+
+// rings start & spin
+$a4Delay: 0.5s;
+$a4Start: $a2Start + $a2Duration ;
+$a4Duration: 200s;
+  $a41Duration: 40s;
+  $a42Duration: 60s;
+
+// lettering animation timing
+$a5Delay: -1.7s;
+$a5Start: $a2Start + $a2Duration + $a5Delay;
+$a5Duration: 1s;
+  $a5gDelay: .15s;
+
+// center spin finals
+$a6Delay:0;
+$a6Start: $a2Start + $a2Duration + ($a2Delay );
+
+$a7Start: $a5Start+0.75;
+
+$timing1:cubic-bezier(.22,-0.08,0,.99);
+$timing2:cubic-bezier(.52,-0.61,0,1);
+$timing3:cubic-bezier(.25,0,0,1);
+$timingZoomOut:cubic-bezier(0,0,0,.93) ;
+
+
+
+// --------------------------------------------------------------- POSITION VARS
+$centerInitialPosition:     translate(0,600px)  scale(1);
+$centerSecondaryPosition:   translate(0,-30px)  scale(1.3) ;
+$centerPosition:        translate(0,0)    scale(1);
+
+$blurredStarInitialPosition:  rotate( -45deg)     scale(0)  ;
+$blurredStarStopPosition:   rotate( -45deg)     scale(1.2)  ;
+$blurredStarSecondaryPosition:  rotate( -45deg)     scale(1)  ;
+$blurredStar1Position:      rotate(260 + 25deg)   scale(1)  ;
+$blurredStar2Position:      rotate(260 + 240deg)  scale(1)  ;
+$blurredStar3Position:      rotate(260 + 70deg)   scale(1)  ;
+$blurredStar4Position:      rotate(260 + 340deg)  scale(1)  ;
+$blurredStar1Position2:     rotate(360 + 260 + 25deg)   scale(1)  ;
+$blurredStar2Position2:     rotate(360 + 260 + 240deg)  scale(1)  ;
+$blurredStar3Position2:     rotate(360 + 260 + 70deg)   scale(1)  ;
+$blurredStar4Position2:     rotate(360 + 260 + 340deg)  scale(1)  ;
+
+$outerRingInitialPosition:    rotate(0deg);
+$outerRingPosition:       rotate(70deg);
+
+
+
+// --------------------------------------------------------------- KEYFRAMES
+$z: translateZ(0);
+
+@keyframes spin-in {
+  0%    {   transform: rotate(0deg) $z;   opacity: 0;}
+  1%    {   opacity: 1;}
+  100%  {   transform: rotate(360deg) $z;   opacity: 1;}
+}
+@keyframes spin {
+  0%    {   transform: rotate(0deg)   $z;}
+  100%  {   transform: rotate(360deg) $z;}
 }
 
-/* HTML5 display definitions
-   ========================================================================== */
-
-/**
- * Correct `block` display not defined for any HTML5 element in IE 8/9.
- * Correct `block` display not defined for `details` or `summary` in IE 10/11
- * and Firefox.
- * Correct `block` display not defined for `main` in IE 11.
- */
-
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-main,
-menu,
-nav,
-section,
-summary {
-  display: block;
+@keyframes a1 {
+  0%    { transform: $centerInitialPosition $z;}
+  70%   { transform: $centerSecondaryPosition $z;}
+  100%  { transform: $centerPosition      $z;}
 }
 
-/**
- * 1. Correct `inline-block` display not defined in IE 8/9.
- * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.
- */
-
-audio,
-canvas,
-progress,
-video {
-  display: inline-block; /* 1 */
-  vertical-align: baseline; /* 2 */
+$stoppoint: 7%;
+$midpoint: 15%;
+@keyframes a21 {
+  0%        { transform: $blurredStarInitialPosition    $z; opacity: 0;}
+  #{$stoppoint} { transform: $blurredStarStopPosition     $z; opacity: 1;}
+  #{$midpoint}  { transform: $blurredStarSecondaryPosition  $z;}
+  100%      { transform: $blurredStar1Position      $z;}
+}
+@keyframes a22 {
+  0%        { transform: $blurredStarInitialPosition    $z; opacity: 0;}
+  #{$stoppoint} { transform: $blurredStarStopPosition     $z; opacity: 1;}
+  #{$midpoint}  { transform: $blurredStarSecondaryPosition  $z;}
+  100%      { transform: $blurredStar2Position      $z;}
+}
+@keyframes a23 {
+  0%        { transform: $blurredStarInitialPosition    $z; opacity: 0;}
+  #{$stoppoint} { transform: $blurredStarStopPosition     $z; opacity: 1;}
+  #{$midpoint}  { transform: $blurredStarSecondaryPosition  $z;}
+  100%      { transform: $blurredStar3Position      $z;}
+}
+@keyframes a24 {
+  0%        { transform: $blurredStarInitialPosition    $z; opacity: 0;}
+  #{$stoppoint} { transform: $blurredStarStopPosition     $z; opacity: 1;}
+  #{$midpoint}  { transform: $blurredStarSecondaryPosition  $z;}
+  100%      { transform: $blurredStar4Position      $z;}
 }
 
-/**
- * Prevent modern browsers from displaying `audio` without controls.
- * Remove excess height in iOS 5 devices.
- */
-
-audio:not([controls]) {
-  display: none;
-  height: 0;
+@keyframes spin1 {
+  0%    {   transform: $blurredStar1Position  $z;}
+  100%  {   transform: $blurredStar1Position2 $z;}
+}
+@keyframes spin2 {
+  0%    {   transform: $blurredStar2Position  $z;}
+  100%  {   transform: $blurredStar2Position2 $z;}
+}
+@keyframes spin3 {
+  0%    {   transform: $blurredStar3Position  $z;}
+  100%  {   transform: $blurredStar3Position2 $z;}
+}
+@keyframes spin4 {
+  0%    {   transform: $blurredStar4Position  $z;}
+  100%  {   transform: $blurredStar4Position2 $z;}
 }
 
-/**
- * Address `[hidden]` styling not present in IE 8/9/10.
- * Hide the `template` element in IE 8/9/11, Safari, and Firefox < 22.
- */
-
-[hidden],
-template {
-  display: none;
+@keyframes a3 {
+  0%    {   
+    transform: $outerRingInitialPosition $z;
+    opacity: 0;
+  }
+  100%  {   
+    transform: $outerRingPosition $z; 
+    opacity: 1;
+  }
 }
 
-/* Links
-   ========================================================================== */
+@keyframes fade-in {
+  0% {
+    transform: scale(1.1) translateX(0);
+    // opacity: 0;
+  }
+  100% {
+    // opacity: 1;
+    transform: scale(1) translateX(0); 
+    fill: #fff; /* without this it won't work in Chrome/Safari */
+  }
 
-/**
- * Remove the gray background color from active links in IE 10.
- */
-
-a {
-  background-color: transparent;
 }
 
-/**
- * Improve readability when focused and also mouse hovered in all browsers.
- */
 
-a:active,
-a:hover {
-  outline: 0;
+
+// --------------------------------------------------------------- ANIMATION ALLOCATION
+.animate{ // class is added by jQuery durin the window.load event
+
+  #p-laris, #graphics{  
+    opacity: 1;
+    animation: fade-in $a5Duration $a5Start $rushOut 1 forwards;
+    fill: rgba(white,0);
+  }
+  #graphics{ animation-delay: $a5Start + $a5gDelay; }
+
+  #star{
+    transform: $centerInitialPosition;
+    animation: a1 $a1Duration $a1Start ease 1 forwards;
+  }
+
+  .blurred-star{ transform: $blurredStarInitialPosition; }
+  #blur-1{  animation: a21 $a21Duration $a21Start $timing3 1 forwards, spin1 20s $a6Start linear infinite; }
+  #blur-2{  animation: a22 $a22Duration $a22Start $timing3 1 forwards, spin2 30s $a6Start linear infinite; }
+  #blur-3{  animation: a23 $a23Duration $a23Start $timing3 1 forwards, spin3 40s $a6Start linear infinite; }
+  #blur-4{  animation: a24 $a24Duration $a24Start $timing3 1 forwards, spin4 50s $a6Start linear infinite; }
+
+  #ring-1{  
+    animation:  spin-in $a41Duration $a21Start+1 linear 1 forwards, 
+          spin $a41Duration linear infinite ;
+    opacity: 0;
+  }
+  #ring-2{  
+    animation:  spin-in $a42Duration $a23Start+1 linear 1 forwards, 
+          spin $a42Duration linear infinite ;
+    opacity: 0;
+  }
 }
 
-/* Text-level semantics
-   ========================================================================== */
 
-/**
- * Address styling not present in IE 8/9/10/11, Safari, and Chrome.
- */
 
-abbr[title] {
-  border-bottom: 1px dotted;
+// --------------------------------------------------------------- STYLING PROPERTIES
+#p-laris
+,#graphics
+,#star
+,.blurred-star
+{
+  transform-origin: 467px 353px;
+  backface-visibility: hidden;
 }
 
-/**
- * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.
- */
-
-b,
-strong {
-  font-weight: bold;
+#lettering
+,.blurred-star
+{
+  fill:#fff;
+}
+#star{
+  fill: $colorAccent;
 }
 
-/**
- * Address styling not present in Safari and Chrome.
- */
-
-dfn {
-  font-style: italic;
+.ring svg{
+  fill: none;
+  stroke: $colorAnimationRings;
+  stroke-linecap: round;
+  stroke-miterlimit: 10;
+}
+#ring-1 svg{
+  opacity:.3;
+  stroke-width:1px;
+}
+#ring-2 svg{
+  opacity:.35;
+  stroke-width:3px;
 }
 
-/**
- * Address variable `h1` font-size and margin within `section` and `article`
- * contexts in Firefox 4+, Safari, and Chrome.
- */
-
-h1 {
-  margin: 0.67em 0;
-  font-size: 2em;
+#home-bg{
+  z-index: index($z-of, '#home-bg');
+  @include absoluteFill;
+  background: $colorAnimationBG;
 }
 
-/**
- * Address styling not present in IE 8/9.
- */
-
-mark {
-  color: #000;
-  background: #ff0;
-}
-
-/**
- * Address inconsistent and variable font size in all browsers.
- */
-
-small {
-  font-size: 80%;
-}
-
-/**
- * Prevent `sub` and `sup` affecting `line-height` in all browsers.
- */
-
-sub,
-sup {
-  position: relative;
-  font-size: 75%;
-  line-height: 0;
-  vertical-align: baseline;
-}
-
-sup {
-  top: -0.5em;
-}
-
-sub {
-  bottom: -0.25em;
-}
-
-/* Embedded content
-   ========================================================================== */
-
-/**
- * Remove border when inside `a` element in IE 8/9/10.
- */
-
-img {
-  border: 0;
-}
-
-/**
- * Correct overflow not hidden in IE 9/10/11.
- */
-
-svg:not(:root) {
+#total-animation{
+  @include absoluteFill;
+  background: $colorAnimationBG;
   overflow: hidden;
 }
 
-/* Grouping content
-   ========================================================================== */
-
-/**
- * Address margin not present in IE 8/9 and Safari.
- */
-
-figure {
-  margin: 1em 40px;
-}
-
-/**
- * Address differences between Firefox and other browsers.
- */
-
-hr {
-  height: 0;
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
-}
-
-/**
- * Contain overflow in all browsers.
- */
-
-pre {
-  overflow: auto;
-}
-
-/**
- * Address odd `em`-unit font size rendering in all browsers.
- */
-
-code,
-kbd,
-pre,
-samp {
-  font-family: monospace, monospace;
-  font-size: 1em;
-}
-
-/* Forms
-   ========================================================================== */
-
-/**
- * Known limitation: by default, Chrome and Safari on OS X allow very limited
- * styling of `select`, unless a `border` property is set.
- */
-
-/**
- * 1. Correct color not being inherited.
- *    Known issue: affects color of disabled elements.
- * 2. Correct font properties not being inherited.
- * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.
- */
-
-button,
-input,
-optgroup,
-select,
-textarea {
-  margin: 0; /* 3 */
-  font: inherit; /* 2 */
-  color: inherit; /* 1 */
-}
-
-/**
- * Address `overflow` set to `hidden` in IE 8/9/10/11.
- */
-
-button {
-  overflow: visible;
-}
-
-/**
- * Address inconsistent `text-transform` inheritance for `button` and `select`.
- * All other form control elements do not inherit `text-transform` values.
- * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.
- * Correct `select` style inheritance in Firefox.
- */
-
-button,
-select {
-  text-transform: none;
-}
-
-/**
- * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`
- *    and `video` controls.
- * 2. Correct inability to style clickable `input` types in iOS.
- * 3. Improve usability and consistency of cursor style between image-type
- *    `input` and others.
- */
-
-button,
-html input[type="button"], /* 1 */
-input[type="reset"],
-input[type="submit"] {
-  -webkit-appearance: button; /* 2 */
-  cursor: pointer; /* 3 */
-}
-
-/**
- * Re-set default cursor for disabled elements.
- */
-
-button[disabled],
-html input[disabled] {
-  cursor: default;
-}
-
-/**
- * Remove inner padding and border in Firefox 4+.
- */
-
-button::-moz-focus-inner,
-input::-moz-focus-inner {
-  padding: 0;
-  border: 0;
-}
-
-/**
- * Address Firefox 4+ setting `line-height` on `input` using `!important` in
- * the UA stylesheet.
- */
-
-input {
-  line-height: normal;
-}
-
-/**
- * It's recommended that you don't attempt to style these elements.
- * Firefox's implementation doesn't respect box-sizing, padding, or width.
- *
- * 1. Address box sizing set to `content-box` in IE 8/9/10.
- * 2. Remove excess padding in IE 8/9/10.
- */
-
-input[type="checkbox"],
-input[type="radio"] {
-  box-sizing: border-box; /* 1 */
-  padding: 0; /* 2 */
-}
-
-/**
- * Fix the cursor style for Chrome's increment/decrement buttons. For certain
- * `font-size` values of the `input`, it causes the cursor style of the
- * decrement button to change from `default` to `text`.
- */
-
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-  height: auto;
-}
-
-/**
- * 1. Address `appearance` set to `searchfield` in Safari and Chrome.
- * 2. Address `box-sizing` set to `border-box` in Safari and Chrome
- *    (include `-moz` to future-proof).
- */
-
-input[type="search"] {
-  -webkit-box-sizing: content-box; /* 2 */
-  -moz-box-sizing: content-box;
-  box-sizing: content-box;
-  -webkit-appearance: textfield; /* 1 */
-}
-
-/**
- * Remove inner padding and search cancel button in Safari and Chrome on OS X.
- * Safari (but not Chrome) clips the cancel button when the search input has
- * padding (and `textfield` appearance).
- */
-
-input[type="search"]::-webkit-search-cancel-button,
-input[type="search"]::-webkit-search-decoration {
-  -webkit-appearance: none;
-}
-
-/**
- * Define consistent border, margin, and padding.
- */
-
-fieldset {
-  padding: 0.35em 0.625em 0.75em;
-  margin: 0 2px;
-  border: 1px solid #c0c0c0;
-}
-
-/**
- * 1. Correct `color` not being inherited in IE 8/9/10/11.
- * 2. Remove padding so people aren't caught out if they zero out fieldsets.
- */
-
-legend {
-  padding: 0; /* 2 */
-  border: 0; /* 1 */
-}
-
-/**
- * Remove default vertical scrollbar in IE 8/9/10/11.
- */
-
-textarea {
-  overflow: auto;
-}
-
-/**
- * Don't inherit the `font-weight` (applied by a rule above).
- * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.
- */
-
-optgroup {
-  font-weight: bold;
-}
-
-/* Tables
-   ========================================================================== */
-
-/**
- * Remove most spacing between table cells.
- */
-
-table {
-  border-spacing: 0;
-  border-collapse: collapse;
-}
-
-td,
-th {
-  padding: 0;
-}
-
-/* LAYOUT STYLES */
-body {
-  font-family: 'Helvetica Neue', Helvetica, Arial, serif;
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #666;
-  background: #fafafa url(../images/body-bg.jpg) 0 0 repeat;
-}
-
-p {
-  margin-top: 0;
-}
-
-a {
-  color: #2879d0;
-}
-a:hover {
-  color: #2268b2;
-}
-
-header {
-  padding-top: 40px;
-  padding-bottom: 40px;
-  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
-  background: #2e7bcf url(../images/header-bg.jpg) 0 0 repeat-x;
-  border-bottom: solid 1px #275da1;
-}
-
-header h1 {
-  width: 540px;
-  margin-top: 0;
-  margin-bottom: 0.2em;
-  font-size: 72px;
-  font-weight: normal;
-  line-height: 1;
-  color: #fff;
-  letter-spacing: -1px;
-}
-
-header h2 {
-  width: 540px;
-  margin-top: 0;
-  margin-bottom: 0;
-  font-size: 26px;
-  font-weight: normal;
-  line-height: 1.3;
-  color: #9ddcff;
-  letter-spacing: 0;
-}
-
-.inner {
-  position: relative;
-  width: 940px;
-  margin: 0 auto;
-}
-
-#content-wrapper {
-  padding-top: 30px;
-  border-top: solid 1px #fff;
-}
-
-#main-content {
-  float: left;
-  width: 690px;
-}
-
-#main-content img {
-  max-width: 100%;
-}
-
-aside#sidebar {
-  float: right;
-  width: 200px;
-  min-height: 504px;
-  padding-left: 20px;
-  font-size: 12px;
-  line-height: 1.3;
-  background: transparent url(../images/sidebar-bg.jpg) 0 0 no-repeat;
-}
-
-aside#sidebar p.repo-owner,
-aside#sidebar p.repo-owner a {
-  font-weight: bold;
-}
-
-#downloads {
-  margin-bottom: 40px;
-}
-
-a.button {
-  width: 134px;
-  height: 58px;
-  padding-top: 22px;
-  padding-left: 68px;
-  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
-  font-size: 23px;
-  line-height: 1.2;
-  color: #fff;
-}
-a.button small {
-  display: block;
-  font-size: 11px;
-}
-header a.button {
+.ring {
+  z-index: index($z-of, '.ring');
   position: absolute;
-  top: 0;
-  right: 0;
-  background: transparent url(../images/github-button.png) 0 0 no-repeat;
-}
-aside a.button {
-  display: block;
-  width: 138px;
-  padding-left: 64px;
-  margin-bottom: 20px;
-  font-size: 21px;
-  background: transparent url(../images/download-button.png) 0 0 no-repeat;
-}
-
-code, pre {
-  margin-bottom: 30px;
-  font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
-  font-size: 13px;
-  color: #222;
+  top: 50%; // this is reset by perfectCenterRings()
+  left: 50%;  // this is reset by perfectCenterRings()
+  width: 100% ;
+  height: 100%;
+  transform-origin: top left ;
+  svg{
+    width: 300%;
+    height: 300%;
+    transform: translate(-50%,-50%);
+  }
 }
 
-code {
-  padding: 0 3px;
-  background-color: #f2f8fc;
-  border: solid 1px #dbe7f3;
-}
-
-pre {
-  padding: 20px;
-  overflow: auto;
-  text-shadow: none;
-  background: #fff;
-  border: solid 1px #f2f2f2;
-}
-pre code {
-  padding: 0;
-  color: #2879d0;
-  background-color: #fff;
-  border: none;
-}
-
-ul, ol, dl {
-  margin-bottom: 20px;
-}
-
-
-/* COMMON STYLES */
-
-hr {
-  height: 0;
-  margin-top: 1em;
-  margin-bottom: 1em;
-  border: 0;
-  border-top: solid 1px #ddd;
-}
-
-table {
+#polaris-graphics-animation{
+  z-index: index($z-of, '#polaris-graphics-animation');
+  position: absolute;
+  height: 100%;
   width: 100%;
-  border: 1px solid #ebebeb;
 }
 
-th {
-  font-weight: 500;
+#home-nav{
+  z-index: index($z-of, '#home-nav');
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 
-td {
-  font-weight: 300;
-  text-align: center;
-  border: 1px solid #ebebeb;
-}
+$polarisRatio: $polarisWidth / $polarisHeight ;
+$polarisRatioInvert: $polarisHeight / $polarisWidth ;
+$windowHeight: 100vh ;
+$windowWidth: 100vw ;
 
-form {
-  padding: 20px;
-  background: #f2f2f2;
-
-}
-
-
-/* GENERAL ELEMENT TYPE STYLES */
-
-#main-content h1 {
-  margin-top: 0;
-  margin-bottom: 0;
-  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
-  font-size: 2.8em;
-  font-weight: normal;
-  color: #474747;
-  text-indent: 6px;
-  letter-spacing: -1px;
-}
-
-#main-content h1:before {
-  padding-right: 0.3em;
-  margin-left: -0.9em;
-  color: #9ddcff;
-  content: "/";
-}
-
-#main-content h2 {
-  margin-bottom: 8px;
-  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
-  font-size: 22px;
-  font-weight: bold;
-  color: #474747;
-  text-indent: 4px;
-}
-#main-content h2:before {
-  padding-right: 0.3em;
-  margin-left: -1.5em;
-  content: "//";
-  color: #9ddcff;
-}
-
-#main-content h3 {
-  margin-top: 24px;
-  margin-bottom: 8px;
-  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
-  font-size: 18px;
-  font-weight: bold;
-  color: #474747;
-  text-indent: 3px;
-}
-
-#main-content h3:before {
-  padding-right: 0.3em;
-  margin-left: -2em;
-  content: "///";
-  color: #9ddcff;
-}
-
-#main-content h4 {
-  margin-bottom: 8px;
-  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
-  font-size: 15px;
-  font-weight: bold;
-  color: #474747;
-  text-indent: 3px;
-}
-
-h4:before {
-  padding-right: 0.3em;
-  margin-left: -2.8em;
-  content: "////";
-  color: #9ddcff;
-}
-
-#main-content h5 {
-  margin-bottom: 8px;
-  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
-  font-size: 14px;
-  color: #474747;
-  text-indent: 3px;
-}
-h5:before {
-  padding-right: 0.3em;
-  margin-left: -3.2em;
-  content: "/////";
-  color: #9ddcff;
-}
-
-#main-content h6 {
-  margin-bottom: 8px;
-  font-family: 'Architects Daughter', 'Helvetica Neue', Helvetica, Arial, serif;
-  font-size: .8em;
-  color: #474747;
-  text-indent: 3px;
-}
-h6:before {
-  padding-right: 0.3em;
-  margin-left: -3.7em;
-  content: "//////";
-  color: #9ddcff;
-}
-
-p {
-  margin-bottom: 20px;
-}
-
-a {
-  text-decoration: none;
-}
-
-p a {
-  font-weight: 400;
-}
-
-blockquote {
-  padding: 0 0 0 30px;
-  margin-bottom: 20px;
-  font-size: 1.6em;
-  border-left: 10px solid #e9e9e9;
-}
-
-ul {
-  list-style-position: inside;
-  list-style: disc;
-  padding-left: 20px;
-}
-
-ol {
-  list-style-position: inside;
-  list-style: decimal;
-  padding-left: 3px;
-}
-
-dl dd {
-  font-style: italic;
-  font-weight: 100;
-}
-
-footer {
-  padding-top: 20px;
-  padding-bottom: 30px;
-  margin-top: 40px;
-  font-size: 13px;
-  color: #aaa;
-  background: transparent url('../images/hr.png') 0 0 no-repeat;
-}
-
-footer a {
-  color: #666;
-}
-footer a:hover {
-  color: #444;
-}
-
-/* MISC */
-.clearfix:after {
-  display: block;
-  height: 0;
-  clear: both;
-  visibility: hidden;
-  content: '.';
-}
-
-.clearfix {display: inline-block;}
-* html .clearfix {height: 1%;}
-.clearfix {display: block;}
-
-/* #Media Queries
-================================================== */
-
-/* Smaller than standard 960 (devices and browsers) */
-@media only screen and (max-width: 959px) { }
-
-/* Tablet Portrait size to standard 960 (devices and browsers) */
-@media only screen and (min-width: 768px) and (max-width: 959px) {
-  .inner {
-    width: 740px;
-  }
-  header h1, header h2 {
-    width: 340px;
-  }
-  header h1 {
-    font-size: 60px;
-  }
-  header h2 {
-    font-size: 30px;
-  }
-  #main-content {
-    width: 490px;
-  }
-  #main-content h1:before,
-  #main-content h2:before,
-  #main-content h3:before,
-  #main-content h4:before,
-  #main-content h5:before,
-  #main-content h6:before {
-    padding-right: 0;
-    margin-left: 0;
-    content: none;
+@media screen and (min-aspect-ratio: #{$polarisWidth}/#{$polarisHeight}) {
+  .ring{
+    top:((100% * $polarisCenterY) / $polarisHeight);
+    $offsetX: ( $windowHeight/( $polarisRatioInvert * $polarisWidth/$polarisCenterX ) - $polarisRatio * $windowHeight/2 );
+    $insetX: $windowWidth/2 ;
+    left:calc(#{$insetX} + #{$offsetX});
   }
 }
 
-/* All Mobile Sizes (devices and browser) */
-@media only screen and (max-width: 767px) {
-  .inner {
-    width: 93%;
-  }
-  header {
-    padding: 20px 0;
-  }
-  header .inner {
-    position: relative;
-  }
-  header h1, header h2 {
-    width: 100%;
-  }
-  header h1 {
-    font-size: 48px;
-  }
-  header h2 {
-    font-size: 24px;
-  }
-  header a.button {
-    position: relative;
-    display: inline-block;
-    width: auto;
-    height: auto;
-    padding: 5px 10px;
-    margin-top: 15px;
-    font-size: 13px;
-    line-height: 1;
-    color: #2879d0;
-    text-align: center;
-    background-color: #9ddcff;
-    background-image: none;
-    border-radius: 5px;
-    -moz-border-radius: 5px;
-    -webkit-border-radius: 5px;
-  }
-  header a.button small {
-    display: inline;
-    font-size: 13px;
-  }
-  #main-content,
-  aside#sidebar {
-    float: none;
-    width: 100% ! important;
-  }
-  aside#sidebar {
-    min-height: 0;
-    padding: 20px 0;
-    margin-top: 20px;
-    background-image: none;
-    border-top: solid 1px #ddd;
-  }
-  aside#sidebar a.button {
-    display: none;
-  }
-  #main-content h1:before,
-  #main-content h2:before,
-  #main-content h3:before,
-  #main-content h4:before,
-  #main-content h5:before,
-  #main-content h6:before {
-    padding-right: 0;
-    margin-left: 0;
-    content: none;
+@media screen and (max-aspect-ratio: #{$polarisWidth}/#{$polarisHeight}) {
+  .ring{
+    left:((100% * $polarisCenterX) / $polarisWidth);
+    $offsetY: ( $windowWidth/( $polarisRatio * $polarisHeight/$polarisCenterY ) - $polarisRatioInvert * $windowWidth/2 );
+    $insetY: $windowHeight/2 ;
+    top:calc(#{$insetY} + #{$offsetY});
   }
 }
 
-/* Mobile Landscape Size to Tablet Portrait (devices and browsers) */
-@media only screen and (min-width: 480px) and (max-width: 767px) { }
-
-/* Mobile Portrait Size to Mobile Landscape Size (devices and browsers) */
-@media only screen and (max-width: 479px) { }
-
+/*! 
+ * Firefox 1.0+ Detection 
+ * FireFox can't handle animationing such a large area?
+ * hide the .rings so we don't see choppy animation
+ */
+@-moz-document url-prefix() { 
+  .ring {
+     display:none;
+  }
+}
