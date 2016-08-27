@@ -1,13 +1,317 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Document</title>
-  <link rel="stylesheet" href="stylesheets/stylesheet.sass">
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-</head>
-<body>
-  <div id="total-animation" class="animate">
+<html >
+  <head>
+    <meta charset="UTF-8">
+    <title>polaris.graphics SVG animation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="css/reset.css">
+
+    
+        <style>
+      /* NOTE: The styles were added inline because Prefixfree needs access to your styles and they must be inlined if they are on local disk! */
+      @keyframes spin-in {
+  0% {
+    transform: rotate(0deg) translateZ(0);
+    opacity: 0;
+  }
+  1% {
+    opacity: 1;
+  }
+  100% {
+    transform: rotate(360deg) translateZ(0);
+    opacity: 1;
+  }
+}
+@keyframes spin {
+  0% {
+    transform: rotate(0deg) translateZ(0);
+  }
+  100% {
+    transform: rotate(360deg) translateZ(0);
+  }
+}
+@keyframes a1 {
+  0% {
+    transform: translate(0, 600px) scale(1) translateZ(0);
+  }
+  70% {
+    transform: translate(0, -30px) scale(1.3) translateZ(0);
+  }
+  100% {
+    transform: translate(0, 0) scale(1) translateZ(0);
+  }
+}
+@keyframes a21 {
+  0% {
+    transform: rotate(-45deg) scale(0) translateZ(0);
+    opacity: 0;
+  }
+  7% {
+    transform: rotate(-45deg) scale(1.2) translateZ(0);
+    opacity: 1;
+  }
+  15% {
+    transform: rotate(-45deg) scale(1) translateZ(0);
+  }
+  100% {
+    transform: rotate(285deg) scale(1) translateZ(0);
+  }
+}
+@keyframes a22 {
+  0% {
+    transform: rotate(-45deg) scale(0) translateZ(0);
+    opacity: 0;
+  }
+  7% {
+    transform: rotate(-45deg) scale(1.2) translateZ(0);
+    opacity: 1;
+  }
+  15% {
+    transform: rotate(-45deg) scale(1) translateZ(0);
+  }
+  100% {
+    transform: rotate(500deg) scale(1) translateZ(0);
+  }
+}
+@keyframes a23 {
+  0% {
+    transform: rotate(-45deg) scale(0) translateZ(0);
+    opacity: 0;
+  }
+  7% {
+    transform: rotate(-45deg) scale(1.2) translateZ(0);
+    opacity: 1;
+  }
+  15% {
+    transform: rotate(-45deg) scale(1) translateZ(0);
+  }
+  100% {
+    transform: rotate(330deg) scale(1) translateZ(0);
+  }
+}
+@keyframes a24 {
+  0% {
+    transform: rotate(-45deg) scale(0) translateZ(0);
+    opacity: 0;
+  }
+  7% {
+    transform: rotate(-45deg) scale(1.2) translateZ(0);
+    opacity: 1;
+  }
+  15% {
+    transform: rotate(-45deg) scale(1) translateZ(0);
+  }
+  100% {
+    transform: rotate(600deg) scale(1) translateZ(0);
+  }
+}
+@keyframes spin1 {
+  0% {
+    transform: rotate(285deg) scale(1) translateZ(0);
+  }
+  100% {
+    transform: rotate(645deg) scale(1) translateZ(0);
+  }
+}
+@keyframes spin2 {
+  0% {
+    transform: rotate(500deg) scale(1) translateZ(0);
+  }
+  100% {
+    transform: rotate(860deg) scale(1) translateZ(0);
+  }
+}
+@keyframes spin3 {
+  0% {
+    transform: rotate(330deg) scale(1) translateZ(0);
+  }
+  100% {
+    transform: rotate(690deg) scale(1) translateZ(0);
+  }
+}
+@keyframes spin4 {
+  0% {
+    transform: rotate(600deg) scale(1) translateZ(0);
+  }
+  100% {
+    transform: rotate(960deg) scale(1) translateZ(0);
+  }
+}
+@keyframes a3 {
+  0% {
+    transform: rotate(0deg) translateZ(0);
+    opacity: 0;
+  }
+  100% {
+    transform: rotate(70deg) translateZ(0);
+    opacity: 1;
+  }
+}
+@keyframes fade-in {
+  0% {
+    transform: scale(1.1) translateX(0);
+  }
+  100% {
+    transform: scale(1) translateX(0);
+    fill: #fff;
+    /* without this it won't work in Chrome/Safari */
+  }
+}
+.animate #p-laris, .animate #graphics {
+  opacity: 1;
+  animation: fade-in 1s 2.48s cubic-bezier(0, 0, 0, 1) 1 forwards;
+  fill: rgba(255, 255, 255, 0);
+}
+.animate #graphics {
+  animation-delay: 2.63s;
+}
+.animate #star {
+  transform: translate(0, 600px) scale(1);
+  animation: a1 0.6s 0.5s ease 1 forwards;
+}
+.animate .blurred-star {
+  transform: rotate(-45deg) scale(0);
+}
+.animate #blur-1 {
+  animation: a21 3.71s 0.68s cubic-bezier(0.25, 0, 0, 1) 1 forwards, spin1 20s 4.25s linear infinite;
+}
+.animate #blur-2 {
+  animation: a22 3.64s 0.75s cubic-bezier(0.25, 0, 0, 1) 1 forwards, spin2 30s 4.25s linear infinite;
+}
+.animate #blur-3 {
+  animation: a23 3.57s 0.82s cubic-bezier(0.25, 0, 0, 1) 1 forwards, spin3 40s 4.25s linear infinite;
+}
+.animate #blur-4 {
+  animation: a24 3.5s 0.89s cubic-bezier(0.25, 0, 0, 1) 1 forwards, spin4 50s 4.25s linear infinite;
+}
+.animate #ring-1 {
+  animation: spin-in 40s 1.68s linear 1 forwards, spin 40s linear infinite;
+  opacity: 0;
+}
+.animate #ring-2 {
+  animation: spin-in 60s 1.82s linear 1 forwards, spin 60s linear infinite;
+  opacity: 0;
+}
+
+#p-laris
+, #graphics
+, #star
+, .blurred-star {
+  transform-origin: 467px 353px;
+  backface-visibility: hidden;
+}
+
+#lettering
+, .blurred-star {
+  fill: #fff;
+}
+
+#star {
+  fill: #ff5831;
+}
+
+.ring svg {
+  fill: none;
+  stroke: #448784;
+  stroke-linecap: round;
+  stroke-miterlimit: 10;
+}
+
+#ring-1 svg {
+  opacity: .3;
+  stroke-width: 1px;
+}
+
+#ring-2 svg {
+  opacity: .35;
+  stroke-width: 3px;
+}
+
+#home-bg {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: #172126;
+}
+
+#total-animation {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: #172126;
+  overflow: hidden;
+}
+
+.ring {
+  z-index: 3;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  transform-origin: top left;
+}
+.ring svg {
+  width: 300%;
+  height: 300%;
+  transform: translate(-50%, -50%);
+}
+
+#polaris-graphics-animation {
+  z-index: 4;
+  position: absolute;
+  height: 100%;
+  width: 100%;
+}
+
+#home-nav {
+  z-index: 5;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+@media screen and (min-aspect-ratio: 1200 / 800) {
+  .ring {
+    top: 44.125%;
+    left: calc(50vw + -16.625vh);
+  }
+}
+@media screen and (max-aspect-ratio: 1200 / 800) {
+  .ring {
+    left: 38.91667%;
+    top: calc(50vh + -3.91667vw);
+  }
+}
+/*! 
+ * Firefox 1.0+ Detection 
+ * FireFox can't handle animationing such a large area?
+ * hide the .rings so we don't see choppy animation
+ */
+@-moz-document url-prefix() {
+  .ring {
+    display: none;
+  }
+}
+
+    </style>
+
+    
+        <script src="js/prefixfree.min.js"></script>
+
+    
+  </head>
+
+  <body>
+
+    <div id="total-animation" class="animate">
   <div id="ring-1" class="ring">
     <svg viewBox="0 0 1756 1756">
       <path d="
@@ -85,7 +389,7 @@
 
   <div id="ring-2" class="ring">
     <svg viewBox="0 0 1756 1756">
-      <path d=" 
+      <path d="	
           M739.537,160.516c396.092-76.463,779.14,182.62,855.604,578.716 M1199.637,1675.333
           c-440.55,177.652-941.659-35.453-1119.312-476.004 M1325.768,409.333c258.678,247.319,267.879,657.466,20.562,916.139
            M548.74,1354.339c-263.269-181.841-329.272-542.637-147.43-805.906 M579.726,393.031
@@ -242,5 +546,11 @@
     </g>
   </svg>
 </div>
-</body>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+
+    
+    
+    
+    
+  </body>
 </html>
